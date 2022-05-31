@@ -4,7 +4,7 @@ import { createApp } from 'vue'
 import { globalRegister } from './global'
 
 // import './service/axios_demo'
-import hyRequest from './service'
+import cmsRequest from './service'
 
 import App from './App.vue'
 
@@ -16,9 +16,19 @@ const app = createApp(App)
 app.use(globalRegister)
 app.use(store).use(router).mount('#app')
 
-hyRequest.request({
+cmsRequest.request({
   url: '/home/multidata',
-  method: 'GET'
+  method: 'GET',
+  headers: {},
+  interceptors: {
+    requestInterceptor: (config) => {
+      console.log('单独请求的config')
+      return config
+    },
+    responseInterceptor: (res) => {
+      console.log('单独响应的response')
+      return res
+    }
+  }
 })
-
 console.log(process.env.VUE_APP_BASE_URL)
