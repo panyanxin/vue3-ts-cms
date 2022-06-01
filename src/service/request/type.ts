@@ -9,4 +9,5 @@ export interface CMSRequestInterceptors {
 
 export interface CMSRequestConfig extends AxiosRequestConfig {
   interceptors?: CMSRequestInterceptors
+  showLoading?: boolean
 }

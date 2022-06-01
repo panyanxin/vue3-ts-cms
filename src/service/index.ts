@@ -7,6 +7,12 @@ const cmsRequest = new CMSRequest({
   timeout: TIME_OUT,
   interceptors: {
     requestInterceptor: (config) => {
+      // 携带token的拦截
+      const token = ''
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+
       // console.log('请求成功的拦截')
       return config
     },

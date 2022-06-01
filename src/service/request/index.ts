@@ -1,16 +1,21 @@
 import axios from 'axios'
-import type { AxiosInstance, AxiosRequestConfig } from 'axios'
+import type { AxiosInstance } from 'axios'
 import type { CMSRequestInterceptors, CMSRequestConfig } from './type'
 
-// import { ElLoading } from 'element-plus'
-// import { ILoadingInstance } from 'element-plus/lib/el-loading/src/loading.type'
+import { ElLoading } from 'element-plus'
+import { ILoadingInstance } from 'element-plus/lib/el-loading/src/loading.type'
+
+const DEFAULT_LOADING = true
 
 class CMSRequest {
   instance: AxiosInstance
   interceptors?: CMSRequestInterceptors
+  showLoading: boolean
+  loading?: ILoadingInstance
   constructor(config: CMSRequestConfig) {
     // 创建axios实例
     this.instance = axios.create(config)
+    this.showLoading = config.showLoading ?? DEFAULT_LOADING
     this.interceptors = config.interceptors
 
     // 使用拦截器
@@ -28,7 +33,13 @@ class CMSRequest {
     this.instance.interceptors.request.use(
       (config) => {
         console.log('所有的实例都有的拦截器: 请求成功拦截')
-
+        if (this.showLoading) {
+          this.loading = ElLoading.service({
+            lock: true,
+            text: '正在请求数据....',
+            background: 'rgba(0, 0, 0, 0.5)'
+          })
+        }
         return config
       },
       (err) => {
@@ -40,10 +51,21 @@ class CMSRequest {
     this.instance.interceptors.response.use(
       (res) => {
         console.log('所有的实例都有的拦截器: 响应成功拦截')
-        return res
+
+        // 将loading移除
+        this.loading?.close()
+
+        const data = res.data
+        if (data.returnCode === '-1001') {
+          console.log('请求失败~, 错误信息')
+        } else {
+          return data
+        }
       },
       (err) => {
         console.log('所有的实例都有的拦截器: 响应失败拦截')
+        // 将loading移除
+        this.loading?.close()
 
         // 例子: 判断不同的HttpErrorCode显示不同的错误信息
         if (err.response.status === 404) {
@@ -58,13 +80,25 @@ class CMSRequest {
     if (config.interceptors?.requestInterceptor) {
       config = config.interceptors.requestInterceptor(config)
     }
-    this.instance.request(config).then((res) => {
-      // 1.单个请求对数据的处理
-      if (config.interceptors?.responseInterceptor) {
-        res = config.interceptors.responseInterceptor(res)
-      }
-      console.log(res)
-    })
+    // 2.判断是否需要显示loading
+    if (config.showLoading === false) {
+      this.showLoading = config.showLoading
+    }
+    this.instance
+      .request(config)
+      .then((res) => {
+        // 1.单个请求对数据的处理
+        if (config.interceptors?.responseInterceptor) {
+          res = config.interceptors.responseInterceptor(res)
+        }
+        // 2.将showLoading设置true, 这样不会影响下一个请求
+        this.showLoading = DEFAULT_LOADING
+        console.log(res)
+      })
+      .catch((err) => {
+        // 将showLoading设置true, 这样不会影响下一个请求
+        this.showLoading = DEFAULT_LOADING
+      })
   }
   // get() {}
 }
