@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
+import { globalRegister } from './global'
+import 'normalize.css'
+import './assets/css/index.less'
+
 // import ElementPlus from 'element-plus'
 // import 'element-plus/dist/index.css'
-import { globalRegister } from './global'
 
 // import './service/axios_demo'
 import cmsRequest from './service'
