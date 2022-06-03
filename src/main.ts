@@ -7,7 +7,7 @@ import './assets/css/index.less'
 // import 'element-plus/dist/index.css'
 
 // import './service/axios_demo'
-import cmsRequest from './service'
+// import cmsRequest from './service'
 
 import App from './App.vue'
 
