@@ -7,6 +7,7 @@ import {
 } from '@/service/login/login'
 
 import localCache from '@/utils/cache'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 
 import { IAccount } from '@/service/login/type'
 import { ILoginState } from './types'
@@ -32,6 +33,16 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
     changeUserMenus(state, userMenus: any) {
       state.userMenus = userMenus
+      console.log('注册动态路由')
+
+      // userMenus => routes
+      const routes = mapMenusToRoutes(userMenus)
+      // console.log(routes)
+
+      // 将routes => router.main.children
+      routes.forEach((route) => {
+        router.addRoute('main', route)
+      })
     }
   },
   actions: {
