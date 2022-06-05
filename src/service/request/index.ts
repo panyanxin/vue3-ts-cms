@@ -75,7 +75,7 @@ class CMSRequest {
       }
     )
   }
-  request<T>(config: CMSRequestConfig<T>): Promise<T> {
+  request<T = any>(config: CMSRequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       // 1.单个请求对请求config的处理
       if (config.interceptors?.requestInterceptor) {
@@ -106,19 +106,19 @@ class CMSRequest {
         })
     })
   }
-  get<T>(config: CMSRequestConfig<T>): Promise<T> {
+  get<T = any>(config: CMSRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
 
-  post<T>(config: CMSRequestConfig<T>): Promise<T> {
+  post<T = any>(config: CMSRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
 
-  delete<T>(config: CMSRequestConfig<T>): Promise<T> {
+  delete<T = any>(config: CMSRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
 
-  patch<T>(config: CMSRequestConfig<T>): Promise<T> {
+  patch<T = any>(config: CMSRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
