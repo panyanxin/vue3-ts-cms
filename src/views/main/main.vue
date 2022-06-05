@@ -8,7 +8,7 @@
         <el-header class="page-header">
           <nav-header @foldChange="handleFoldChange" />
         </el-header>
-        <el-main class="page-container">
+        <el-main class="page-content">
           <div class="page-info">
             <router-view></router-view>
           </div>
@@ -50,6 +50,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 }
+
 .main-content,
 .page {
   height: 100%;
@@ -57,11 +58,13 @@ export default defineComponent({
 
 .page-content {
   height: calc(100% - 48px);
+
   .page-info {
     background-color: #fff;
     border-radius: 5px;
   }
 }
+
 .el-header,
 .el-footer {
   display: flex;
@@ -73,6 +76,7 @@ export default defineComponent({
 .el-header {
   height: 48px !important;
 }
+
 .el-aside {
   overflow-x: hidden;
   overflow-y: auto;

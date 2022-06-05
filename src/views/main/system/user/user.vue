@@ -1,34 +1,36 @@
 <template>
   <div class="user">
-    <cms-form v-bind="searchFormConfig" v-model="formData" />
+    <page-search :searchFormConfig="searchFormConfig" />
+
     <div class="content"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
-import CmsForm from '@/base-ui/form'
+
+import PageSearch from '@/components/page-search'
 import { searchFormConfig } from './config/search.config'
 
 export default defineComponent({
   name: 'user',
   components: {
-    CmsForm
+    PageSearch
   },
   setup() {
-    const formData = reactive({
-      id: '',
-      name: '',
-      password: '',
-      sport: '',
-      createTime: ''
-    })
     return {
-      searchFormConfig,
-      formData
+      searchFormConfig
     }
   }
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.header {
+  color: red;
+}
+.handle-btns {
+  text-align: right;
+  padding: 0 50px 20px 0;
+}
+</style>
