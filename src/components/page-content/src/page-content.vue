@@ -1,6 +1,11 @@
 <template>
   <div class="page-content">
-    <cms-table v-bind="contentTableConfig" :listData="dataList">
+    <cms-table
+      v-bind="contentTableConfig"
+      :listData="dataList"
+      :listCount="dataCount"
+      v-model:page="pageInfo"
+    >
       <!-- 1.header中的插槽 -->
       <template #headerHandler>
         <el-button type="primary" size="medium">新建用户</el-button>
@@ -37,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
 
 import CmsTable from '@/base-ui/table'
@@ -59,26 +64,35 @@ export default defineComponent({
   setup(props) {
     const store = useStore()
 
+    // 1.双向绑定pageInfo
+    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    watch(pageInfo, () => getPageData())
+
     // 发生网络请求
     const getPageData = (queryInfo: any = {}) => {
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
-          offset: 0,
-          size: 10,
+          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          size: pageInfo.value.pageSize,
           ...queryInfo
         }
       })
     }
     getPageData()
 
-    // const dataList = computed(() => store.state.system.usersList)
+    // 3.从vuex中获取数据
     const dataList = computed(() =>
       store.getters[`system/pageListData`](props.pageName)
     )
+    const dataCount = computed(() =>
+      store.getters[`system/pageListCount`](props.pageName)
+    )
 
     return {
+      pageInfo,
       dataList,
+      dataCount,
       getPageData
     }
   }
