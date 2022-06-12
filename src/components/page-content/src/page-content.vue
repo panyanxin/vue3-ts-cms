@@ -8,9 +8,14 @@
     >
       <!-- 1.header中的插槽 -->
       <template #headerHandler>
-        <el-button type="primary" size="medium" v-if="isCreate"
-          >新建用户</el-button
+        <el-button
+          type="primary"
+          size="medium"
+          v-if="isCreate"
+          @click="handleNewClick"
         >
+          新建用户
+        </el-button>
       </template>
 
       <!-- 2.列中的插槽 -->
@@ -37,8 +42,9 @@
             size="mini"
             type="text"
             @click="handleEditClick(scope.row)"
-            >编辑</el-button
           >
+            编辑
+          </el-button>
           <el-button
             v-if="isDelete"
             icon="el-icon-delete"
@@ -84,7 +90,8 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props, { emit }) {
     const store = useStore()
 
     // 0.获取操作的权限
@@ -136,8 +143,11 @@ export default defineComponent({
         id: row.id
       })
     }
-    const handleEditClick = (row: any) => {
-      console.log(row)
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
     }
 
     return {
@@ -149,6 +159,7 @@ export default defineComponent({
       isCreate,
       isUpdate,
       isDelete,
+      handleNewClick,
       handleDeleteClick,
       handleEditClick
     }
