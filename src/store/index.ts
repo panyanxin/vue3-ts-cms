@@ -51,7 +51,8 @@ const store = createStore<IRootState>({
 
 export function setupStore() {
   store.dispatch('login/loadLocalLogin')
-  store.dispatch('getInitialDataAction')
+  // 此方法在退出登录后 受token 影响； 移至login/loadLocalLogin 进行
+  // store.dispatch('getInitialDataAction')
 }
 
 export function useStore(): Store<IStoreType> {
