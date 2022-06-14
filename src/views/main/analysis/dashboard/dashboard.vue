@@ -13,7 +13,9 @@
     </el-row>
     <el-row :gutter="10" class="content-row">
       <el-col :span="12">
-        <cms-card title="分类商品的销量"></cms-card>
+        <cms-card title="分类商品的销量">
+          <BaseEchart :options="options" />
+        </cms-card>
       </el-col>
       <el-col :span="12">
         <cms-card title="分类商品的收藏"></cms-card>
@@ -25,20 +27,39 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from '@/store'
+import BaseEchart from '@/base-ui/echart'
 
 import CmsCard from '@/base-ui/card'
 
 export default defineComponent({
   name: 'dashboard',
   components: {
-    CmsCard
+    CmsCard,
+    BaseEchart
   },
   setup() {
     const store = useStore()
     // 请求数据
     store.dispatch('dashboard/getDashboardDataAction')
 
-    return {}
+    const options = {
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          data: [150, 230, 224, 218, 135, 147, 260],
+          type: 'line'
+        }
+      ]
+    }
+    return {
+      options
+    }
   }
 })
 </script>
