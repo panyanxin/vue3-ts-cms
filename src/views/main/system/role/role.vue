@@ -32,6 +32,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, nextTick } from 'vue'
 import { useStore } from '@/store'
+import { menuMapLeafKeys } from '@/utils/map-menus'
 
 import { ElTree } from 'element-plus'
 import PageSearch from '@/components/page-search'
@@ -54,9 +55,16 @@ export default defineComponent({
   setup() {
     const elTreeRef = ref<InstanceType<typeof ElTree>>()
 
-    // undefined, editCallback
+    const _editCallback = (row: any) => {
+      const leafKeys = menuMapLeafKeys(row.menuList)
+      nextTick(() => {
+        // console.log(elTreeRef.value)
+        elTreeRef.value?.setCheckedKeys(leafKeys, false)
+      })
+      console.log(row, row.menuList, leafKeys)
+    }
     const [pageModalRef, defaultInfo, handleNewData, handleEditData] =
-      usePageModal()
+      usePageModal(undefined, _editCallback)
 
     const store = useStore()
     const menus = computed(() => store.state.entireMenu)
@@ -67,7 +75,6 @@ export default defineComponent({
       const halfCheckedKeys = data2.halfCheckedKeys
       const menuList = [...checkedKeys, ...halfCheckedKeys]
       otherInfo.value = { menuList }
-      console.log(otherInfo.value)
     }
     return {
       searchFormConfig,
