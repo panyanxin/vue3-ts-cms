@@ -7,7 +7,9 @@
         </cms-card>
       </el-col>
       <el-col :span="10">
-        <cms-card title="不同城市商品销量"></cms-card>
+        <cms-card title="不同城市商品销量">
+          <MapEchart :mapData="addressGoodsSale" />
+        </cms-card>
       </el-col>
       <el-col :span="7">
         <cms-card title="分类商品数量(玫瑰图)">
@@ -37,19 +39,18 @@ import { useStore } from '@/store'
 import CmsCard from '@/base-ui/card'
 import {
   RoseEchart,
+  MapEchart,
   LineEchart,
   PieEchart,
   BarEchart
 } from '@/components/page-echart'
-
-//
-// MapEchart
 
 export default defineComponent({
   name: 'dashboard',
   components: {
     CmsCard,
     PieEchart,
+    MapEchart,
     RoseEchart,
     LineEchart,
     BarEchart
@@ -88,10 +89,17 @@ export default defineComponent({
       return { xLabels, values }
     })
 
+    const addressGoodsSale = computed(() => {
+      return store.state.dashboard.addressGoodsSale.map((item: any) => {
+        return { name: item.address, value: item.count }
+      })
+    })
+
     return {
       categoryGoodsCount,
       categoryGoodsSale,
-      categoryGoodsFavor
+      categoryGoodsFavor,
+      addressGoodsSale
     }
   }
 })
