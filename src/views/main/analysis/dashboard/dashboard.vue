@@ -2,23 +2,29 @@
   <div class="dashboard">
     <el-row :gutter="10">
       <el-col :span="7">
-        <cms-card title="分类商品数量(饼图)"></cms-card>
+        <cms-card title="分类商品数量(饼图)">
+          <PieEchart :pieData="categoryGoodsCount" />
+        </cms-card>
       </el-col>
       <el-col :span="10">
         <cms-card title="不同城市商品销量"></cms-card>
       </el-col>
       <el-col :span="7">
-        <cms-card title="分类商品数量(玫瑰图)"></cms-card>
+        <cms-card title="分类商品数量(玫瑰图)">
+          <RoseEchart :roseData="categoryGoodsCount" />
+        </cms-card>
       </el-col>
     </el-row>
     <el-row :gutter="10" class="content-row">
       <el-col :span="12">
         <cms-card title="分类商品的销量">
-          <PieEchart :pieData="categoryGoodsCount" />
+          <LineEchart v-bind="categoryGoodsSale" />
         </cms-card>
       </el-col>
       <el-col :span="12">
-        <cms-card title="分类商品的收藏"></cms-card>
+        <cms-card title="分类商品的收藏">
+          <BarEchart v-bind="categoryGoodsFavor" />
+        </cms-card>
       </el-col>
     </el-row>
   </div>
@@ -29,17 +35,24 @@ import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
 
 import CmsCard from '@/base-ui/card'
-import { PieEchart } from '@/components/page-echart'
-// RoseEchart,
-// LineEchart,
-// BarEchart,
+import {
+  RoseEchart,
+  LineEchart,
+  PieEchart,
+  BarEchart
+} from '@/components/page-echart'
+
+//
 // MapEchart
 
 export default defineComponent({
   name: 'dashboard',
   components: {
     CmsCard,
-    PieEchart
+    PieEchart,
+    RoseEchart,
+    LineEchart,
+    BarEchart
   },
   setup() {
     const store = useStore()
@@ -53,8 +66,32 @@ export default defineComponent({
       })
     })
 
+    const categoryGoodsSale = computed(() => {
+      const xLabels: string[] = []
+      const values: any[] = []
+      const categoryGoodsSale = store.state.dashboard.categoryGoodsSale
+      for (const item of categoryGoodsSale) {
+        xLabels.push(item.name)
+        values.push(item.goodsCount)
+      }
+      return { xLabels, values }
+    })
+
+    const categoryGoodsFavor = computed(() => {
+      const xLabels: string[] = []
+      const values: any[] = []
+      const categoryGoodsFavor = store.state.dashboard.categoryGoodsFavor
+      for (const item of categoryGoodsFavor) {
+        xLabels.push(item.name)
+        values.push(item.goodsFavor)
+      }
+      return { xLabels, values }
+    })
+
     return {
-      categoryGoodsCount
+      categoryGoodsCount,
+      categoryGoodsSale,
+      categoryGoodsFavor
     }
   }
 })
