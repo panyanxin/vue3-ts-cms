@@ -25,7 +25,9 @@ const echartDivRef = ref<HTMLElement>()
 
 onMounted(() => {
   const { setOptions } = useEchart(echartDivRef.value!)
-  setOptions(props.options)
+  watchEffect(() => {
+    setOptions(props.options)
+  })
 })
 </script>
 

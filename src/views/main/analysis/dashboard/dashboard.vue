@@ -14,7 +14,7 @@
     <el-row :gutter="10" class="content-row">
       <el-col :span="12">
         <cms-card title="分类商品的销量">
-          <BaseEchart :options="options" />
+          <PieEchart :pieData="categoryGoodsCount" />
         </cms-card>
       </el-col>
       <el-col :span="12">
@@ -25,40 +25,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
-import BaseEchart from '@/base-ui/echart'
 
 import CmsCard from '@/base-ui/card'
+import { PieEchart } from '@/components/page-echart'
+// RoseEchart,
+// LineEchart,
+// BarEchart,
+// MapEchart
 
 export default defineComponent({
   name: 'dashboard',
   components: {
     CmsCard,
-    BaseEchart
+    PieEchart
   },
   setup() {
     const store = useStore()
     // 请求数据
     store.dispatch('dashboard/getDashboardDataAction')
 
-    const options = {
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      series: [
-        {
-          data: [150, 230, 224, 218, 135, 147, 260],
-          type: 'line'
-        }
-      ]
-    }
+    // 获取数据
+    const categoryGoodsCount = computed(() => {
+      return store.state.dashboard.categoryGoodsCount.map((item: any) => {
+        return { name: item.name, value: item.goodsCount }
+      })
+    })
+
     return {
-      options
+      categoryGoodsCount
     }
   }
 })
